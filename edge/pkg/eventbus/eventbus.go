@@ -201,6 +201,7 @@ func (eb *eventbus) subscribe(topic string) {
 	if err != nil {
 		klog.Errorf("Insert topic %s failed, %v", topic, err)
 	}
+	util.CallRemoteAPI([]byte(topic))
 }
 
 func (eb *eventbus) unsubscribe(topic string) {
@@ -220,4 +221,5 @@ func (eb *eventbus) unsubscribe(topic string) {
 	if err != nil {
 		klog.Errorf("Delete topic %s failed, %v", topic, err)
 	}
+	util.CallRemoteAPI([]byte(topic))
 }

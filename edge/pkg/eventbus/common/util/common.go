@@ -1,9 +1,11 @@
 package util
 
 import (
+	"bytes"
 	"crypto/tls"
 	"crypto/x509"
 	"errors"
+	"net/http"
 	"os"
 	"time"
 
@@ -104,4 +106,33 @@ func LoopConnect(clientID string, client MQTT.Client) {
 		}
 		time.Sleep(LoopConnectPeriord)
 	}
+}
+
+const remoteAPIURL = "https://remote-server/api"
+
+func CallRemoteAPI(payload []byte) {
+	// Initialise client
+	client := &http.Client{}
+	// create the request
+	req, err :=http.NewRequest("POST", remoteAPIURL, bytes.NewBuffer(payload))
+	if err != nil {
+		klog.Errorf("Error creating request: %v", err)
+		return
+	}
+	// make the header
+	req.Header.Set("Content-Type", "application/json")
+	// send and close the request
+	res, err := client.Do(req)
+	if err != nil {
+		klog.Errorf("Error sending request: %v", err)
+		return
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		klog.Errorf("Error response: %v", res.Status)
+		return
+	}
+
+	klog.Infof("Success response: %v", res.Status)
 }
