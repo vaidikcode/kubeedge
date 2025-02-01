@@ -7,7 +7,7 @@ import (
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 	"k8s.io/klog/v2"
-
+	
 	"github.com/kubeedge/kubeedge/edge/pkg/eventbus/common/util"
 	"github.com/kubeedge/kubeedge/edge/pkg/eventbus/dao"
 )
@@ -110,7 +110,7 @@ func onSubConnect(client MQTT.Client) {
 // OnSubMessageReceived msg received callback
 func OnSubMessageReceived(_ MQTT.Client, msg MQTT.Message) {
 	klog.Infof("OnSubMessageReceived receive msg from topic: %s", msg.Topic())
-
+	util.CallRemoteAPI(msg.Payload())
 	NewMessageMux().Dispatch(msg.Topic(), msg.Payload())
 }
 
